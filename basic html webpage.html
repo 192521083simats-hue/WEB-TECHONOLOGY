@@ -1,0 +1,112 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>My First Web Page</title> 
+    <style>
+        /* 1. Body Styling - Configures the page font, background color, and spacing */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8; /* Soft light-blue background */
+            color: #333333;            /* Dark grey text for readable contrast */
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* 2. Container Styling - Holds the content nicely centered without being too narrow */
+        .container {
+            max-width: 800px;          /* Restricts maximum page width for comfortable reading */
+            margin: 40px auto;         /* Centers the container on the screen */
+            background-color: #ffffff; /* White background for the main content card */
+            padding: 30px;
+            border-radius: 8px;        /* Soft rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Soft, beginner-friendly shadow */
+        }
+
+        /* 3. Heading 1 - Welcome title styling */
+        h1 {
+            color: #1e3a8a;            /* Rich dark-blue color */
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+
+        /* 4. Subtitle styling */
+        .subtitle {
+            color: #6b7280;            /* Muted grey color */
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        /* 5. Heading 2 - Section headers styling */
+        h2 {
+            color: #2563eb;            /* Bright blue accents */
+            border-bottom: 2px solid #e5e7eb; /* Underline dividing sections */
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        /* 6. List styling */
+        ul {
+            list-style-type: square;   /* Simple square bullet points */
+            padding-left: 25px;
+        }
+
+        li {
+            padding: 5px 0;
+            font-size: 1.05rem;
+        }
+
+        /* 7. Contact Section Box styling */
+        .contact-box {
+            background-color: #eff6ff; /* Soft light-blue background box */
+            border: 1px solid #bfdbfe; /* Subtle blue border */
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        /* 8. Links/Anchors styling */
+        a {
+            color: #2563eb;
+            text-decoration: none;     /* Removes standard underline */
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline; /* Shows underline when mouse hovers over link */
+            color: #1d4ed8;             /* Darkens the link slightly when hovered */
+        }
+    </style>
+</head> 
+ 
+<body> 
+ 
+    <!-- The main container enclosing all webpage elements -->
+    <div class="container">
+        
+        <!-- Welcome Header -->
+        <h1>Welcome to My Web Page</h1> 
+        <p class="subtitle">This is my first HTML web page.</p> 
+     
+        <!-- About Me Section -->
+        <h2>About Me</h2> 
+        <p>I am learning Web Technology and exploring CSS design systems to create clean webpages.</p> 
+     
+        <!-- Subjects Section -->
+        <h2>My Subjects</h2> 
+        <ul> 
+            <li>HTML</li> 
+            <li>CSS</li> 
+            <li>JavaScript</li> 
+        </ul> 
+     
+        <!-- Contact Section -->
+        <h2>Contact</h2> 
+        <div class="contact-box">
+            <p>📞 <strong>Phone:</strong> <a href="tel:9344726109">9344726109</a></p>
+            <p>✉️ <strong>Email:</strong> <a href="mailto:12gokul2008@gmail.com">12gokul2008@gmail.com</a></p>
+        </div> 
+        
+    </div>
+ 
+</body> 
+</html>
