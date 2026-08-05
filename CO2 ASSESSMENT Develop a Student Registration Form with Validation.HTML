@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration Form</title>
+  <style>
+    :root {
+      --bg: #f3f6ff;
+      --card: #ffffff;
+      --border: #d1d5db;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #4338ca;
+      --error: #dc2626;
+      --radius: 20px;
+      --shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #eef2ff 0%, #f8fafc 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .form-page {
+      width: min(900px, 100%);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 32px 32px 26px;
+      background: linear-gradient(135deg, #4338ca 0%, #2563eb 100%);
+      color: white;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2rem, 3vw, 3rem);
+      line-height: 1.05;
+    }
+
+    .hero p {
+      margin: 14px 0 0;
+      max-width: 760px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+    }
+
+    .form-card {
+      padding: 32px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .section-heading {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .two-column {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #f8fafc;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(67, 56, 202, 0.12);
+    }
+
+    .input-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .helper-text {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .error-text {
+      margin: 6px 0 0;
+      font-size: 0.92rem;
+      color: var(--error);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .checkbox-group input {
+      width: auto;
+      margin: 0;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    button[type="submit"] {
+      background: var(--accent);
+      color: white;
+    }
+
+    button[type="button"] {
+      background: #eef2ff;
+      color: var(--text);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .output-panel {
+      padding: 22px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .output-panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.15rem;
+    }
+
+    .output-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .output-list li {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: white;
+      border: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 720px) {
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="form-page">
+    <section class="hero">
+      <h1>Student Registration Form</h1>
+      <p>Use form controls, validation rules, and JavaScript DOM methods to collect student details and show success or error messages.</p>
+    </section>
+
+    <section class="form-card">
+      <div class="grid two-column">
+        <div class="input-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+          <p class="error-text" id="nameError"></p>
+        </div>
+
+        <div class="input-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="student@example.com" required>
+          <p class="error-text" id="emailError"></p>
+        </div>
+      </div>
+
+      <div class="grid two-column">
+        <div class="input-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="123-456-7890" required>
+          <p class="helper-text">Format: 10 digits or 123-456-7890.</p>
+          <p class="error-text" id="phoneError"></p>
+        </div>
+
+        <div class="input-group">
+          <label for="dob">Date of Birth</label>
+          <input type="date" id="dob" name="dob" required>
+          <p class="error-text" id="dobError"></p>
+        </div>
+      </div>
+
+      <div class="grid two-column">
+        <div class="input-group">
+          <label for="course">Course</label>
+          <select id="course" name="course" required>
+            <option value="">Select a course</option>
+            <option value="B.Tech IT">B.Tech IT</option>
+            <option value="B.Sc Computer Science">B.Sc Computer Science</option>
+            <option value="BBA">BBA</option>
+            <option value="BA English">BA English</option>
+          </select>
+          <p class="error-text" id="courseError"></p>
+        </div>
+
+        <div class="input-group">
+          <label for="cgpa">CGPA</label>
+          <input type="number" step="0.01" id="cgpa" name="cgpa" placeholder="0.00 - 10.00" required min="0" max="10">
+          <p class="error-text" id="cgpaError"></p>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="address">Address</label>
+        <textarea id="address" name="address" rows="4" placeholder="Street address, city, and state"></textarea>
+      </div>
+
+      <div class="input-group">
+        <label for="notes">Additional Notes</label>
+        <textarea id="notes" name="notes" rows="3" placeholder="Optional information about your interests or background."></textarea>
+      </div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="agree" name="agree">
+        <label for="agree">I confirm the information provided is accurate.</label>
+      </div>
+      <p class="error-text" id="agreeError"></p>
+
+      <div class="button-row">
+        <button type="button" id="submitButton">Submit Registration</button>
+        <button type="button" id="resetButton">Reset Form</button>
+      </div>
+
+      <div class="output-panel" id="outputPanel" hidden>
+        <h2>Submission Result</h2>
+        <ul class="output-list" id="outputList"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const formFields = {
+      fullName: document.getElementById('fullName'),
+      email: document.getElementById('email'),
+      phone: document.getElementById('phone'),
+      dob: document.getElementById('dob'),
+      course: document.getElementById('course'),
+      cgpa: document.getElementById('cgpa'),
+      agree: document.getElementById('agree')
+    };
+
+    const errors = {
+      nameError: document.getElementById('nameError'),
+      emailError: document.getElementById('emailError'),
+      phoneError: document.getElementById('phoneError'),
+      dobError: document.getElementById('dobError'),
+      courseError: document.getElementById('courseError'),
+      cgpaError: document.getElementById('cgpaError'),
+      agreeError: document.getElementById('agreeError')
+    };
+
+    const outputPanel = document.getElementById('outputPanel');
+    const outputList = document.getElementById('outputList');
+    const submitButton = document.getElementById('submitButton');
+    const resetButton = document.getElementById('resetButton');
+
+    function showError(field, message) {
+      errors[`${field}Error`].textContent = message;
+    }
+
+    function clearErrors() {
+      Object.values(errors).forEach(errorElement => {
+        errorElement.textContent = '';
+      });
+    }
+
+    function validateName(value) {
+      const trimmed = value.trim();
+      const nameRegex = /^[A-Za-z ]{3,60}$/;
+      return nameRegex.test(trimmed);
+    }
+
+    function validateEmail(value) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(value);
+    }
+
+    function validatePhone(value) {
+      const phoneRegex = /^(?:\d{10}|\d{3}[- ]\d{3}[- ]\d{4})$/;
+      return phoneRegex.test(value);
+    }
+
+    function validateDob(value) {
+      if (!value) return false;
+      const dobDate = new Date(value);
+      const today = new Date();
+      return dobDate < today && dobDate.getFullYear() > 1900;
+    }
+
+    function validateCgpa(value) {
+      const cgpaNumber = parseFloat(value);
+      return !Number.isNaN(cgpaNumber) && cgpaNumber >= 0 && cgpaNumber <= 10;
+    }
+
+    function validateForm() {
+      clearErrors();
+      let isValid = true;
+
+      if (!validateName(formFields.fullName.value)) {
+        showError('name', 'Enter a valid full name (letters and spaces only).');
+        isValid = false;
+      }
+
+      if (!validateEmail(formFields.email.value)) {
+        showError('email', 'Enter a valid email address.');
+        isValid = false;
+      }
+
+      if (!validatePhone(formFields.phone.value)) {
+        showError('phone', 'Enter a valid phone number (10 digits or 123-456-7890).');
+        isValid = false;
+      }
+
+      if (!validateDob(formFields.dob.value)) {
+        showError('dob', 'Enter a valid birth date in the past.');
+        isValid = false;
+      }
+
+      if (!formFields.course.value) {
+        showError('course', 'Select your course.');
+        isValid = false;
+      }
+
+      if (!validateCgpa(formFields.cgpa.value)) {
+        showError('cgpa', 'Enter CGPA between 0.00 and 10.00.');
+        isValid = false;
+      }
+
+      if (!formFields.agree.checked) {
+        showError('agree', 'You must confirm the information is accurate.');
+        isValid = false;
+      }
+
+      return isValid;
+    }
+
+    function buildOutput() {
+      outputList.innerHTML = '';
+      const values = {
+        'Full Name': formFields.fullName.value.trim(),
+        'Email': formFields.email.value.trim(),
+        'Phone': formFields.phone.value.trim(),
+        'Date of Birth': formFields.dob.value,
+        'Course': formFields.course.value,
+        'CGPA': formFields.cgpa.value,
+        'Address': document.getElementById('address').value.trim(),
+        'Notes': document.getElementById('notes').value.trim()
+      };
+
+      Object.entries(values).forEach(([label, value]) => {
+        const item = document.createElement('li');
+        item.textContent = `${label}: ${value || 'N/A'}`;
+        outputList.appendChild(item);
+      });
+    }
+
+    function handleSubmit() {
+      outputPanel.hidden = true;
+
+      if (validateForm()) {
+        buildOutput();
+        outputPanel.hidden = false;
+      }
+    }
+
+    function handleReset() {
+      Object.values(formFields).forEach(input => {
+        if (input.type === 'checkbox') {
+          input.checked = false;
+        } else {
+          input.value = '';
+        }
+      });
+      document.getElementById('address').value = '';
+      document.getElementById('notes').value = '';
+      clearErrors();
+      outputPanel.hidden = true;
+    }
+
+    submitButton.addEventListener('click', handleSubmit);
+    resetButton.addEventListener('click', handleReset);
+  </script>
+</body>
+</html>
