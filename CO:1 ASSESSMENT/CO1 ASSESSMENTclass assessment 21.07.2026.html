@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Registration Form</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: lightgray;
+        }
+
+        .form-box {
+            width: 750px;
+            margin: 50px auto;
+            padding: 25px;
+            background-color: white;
+            border: 2px solid darkblue;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: darkblue;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: rgb(15, 137, 213);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #message {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .student-list {
+            margin: 30px auto;
+            width: 750px;
+            display: grid;
+            gap: 15px;
+        }
+
+        .student-card {
+            padding: 16px;
+            border: 2px solid #2f6fbd;
+            border-radius: 10px;
+            background-color: #eef4ff;
+        }
+
+        .student-card h3 {
+            margin: 0 0 10px;
+            color: #0d3c74;
+        }
+
+        .student-card p {
+            margin: 4px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="form-box">
+
+        <h2>Student Registration</h2>
+
+        <label for="studentName">Student Name</label>
+        <input type="text"
+               id="studentName"
+               placeholder="Enter student name">
+
+        <label for="registerNumber">Register Number</label>
+        <input type="text"
+               id="registerNumber"
+               placeholder="Enter register number">
+
+        <label for="department">Department</label>
+        <select id="department" onchange="updateCourseAndFacultyOptions()">
+            <option value="">Select Department</option>
+            <option value="CSE">CSE</option>
+            <option value="AI">Artificial Intelligence</option>
+            <option value="ECE">ECE</option>
+        </select>
+
+        <label for="course">Course</label>
+        <select id="course">
+            <option value="">Select Course</option>
+        </select>
+
+        <label for="faculty">Faculty</label>
+        <select id="faculty">
+            <option value="">Select Faculty</option>
+        </select>
+
+        <button onclick="registerStudent()">
+            Register
+        </button>
+
+        <p id="message"></p>
+
+    </div>
+
+    <div class="student-list" id="studentList"></div>
+
+    <script>
+        function updateCourseAndFacultyOptions() {
+            const department = document.getElementById("department").value;
+            const courseSelect = document.getElementById("course");
+            const facultySelect = document.getElementById("faculty");
+            const courses = {
+                CSE: ["Data Structures", "Database Management", "Operating Systems", "Computer Networks"],
+                AI: ["Machine Learning", "Data Science", "Neural Networks", "NLP"],
+                ECE: ["Digital Electronics", "Microprocessors", "Communication Systems", "VLSI Design"]
+            };
+            const faculties = {
+                CSE: ["Dr. SURESH", "Dr. RAVI", "Dr.RAMJUMAR"],
+                AI: ["Dr.RAJ", "Dr.KALAI", "Dr.PRADEEP"],
+                ECE: ["Dr.GUNA", "Dr. KIRAN", "Dr.LATHA"]
+            };
+
+            courseSelect.innerHTML = "<option value=''>Select Course</option>";
+            facultySelect.innerHTML = "<option value=''>Select Faculty</option>";
+
+            if (courses[department]) {
+                courses[department].forEach(course => {
+                    const option = document.createElement("option");
+                    option.value = course;
+                    option.textContent = course;
+                    courseSelect.appendChild(option);
+                });
+            }
+
+            if (faculties[department]) {
+                faculties[department].forEach(faculty => {
+                    const option = document.createElement("option");
+                    option.value = faculty;
+                    option.textContent = faculty;
+                    facultySelect.appendChild(option);
+                });
+            }
+        }
+
+        function registerStudent() {
+            const name = document.getElementById("studentName").value;
+            const registerNumber = document.getElementById("registerNumber").value;
+            const department = document.getElementById("department").value;
+            const course = document.getElementById("course").value;
+            const faculty = document.getElementById("faculty").value;
+            const message = document.getElementById("message");
+
+            if (name === "" || registerNumber === "" || department === "" || course === "" || faculty === "") {
+                message.textContent = "Please fill in all the fields.";
+                message.style.color = "red";
+            } else {
+                message.textContent = `Student registered successfully for ${department} - ${course} with ${faculty}.`;
+                message.style.color = "green";
+
+                const studentList = document.getElementById("studentList");
+                const card = document.createElement("div");
+                card.className = "student-card";
+                card.innerHTML = `
+                    <h3>${name}</h3>
+                    <p><strong>Register Number:</strong> ${registerNumber}</p>
+                    <p><strong>Department:</strong> ${department}</p>
+                    <p><strong>Course:</strong> ${course}</p>
+                    <p><strong>Faculty:</strong> ${faculty}</p>
+                `;
+                studentList.appendChild(card);
+
+                document.getElementById("studentName").value = "";
+                document.getElementById("registerNumber").value = "";
+                document.getElementById("department").value = "";
+                document.getElementById("course").innerHTML = "<option value=''>Select Course</option>";
+                document.getElementById("faculty").innerHTML = "<option value=''>Select Faculty</option>";
+            }
+        }
+    </script>
+
+</body>
+</html>
