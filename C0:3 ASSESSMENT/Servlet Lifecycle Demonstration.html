@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Servlet Lifecycle Demonstration</title>
+	<style>
+		:root { --ink:#19292d; --muted:#6b7d80; --paper:#eef3f0; --panel:#fffefa; --line:#d2dfda; --accent:#1b756a; --soft:#dcefe9; --orange:#df7748; --dark:#203d40; --shadow:0 22px 55px rgba(30,68,62,.13); }
+		* { box-sizing:border-box; }
+		body { margin:0; min-height:100vh; color:var(--ink); font-family:"Trebuchet MS","Segoe UI",sans-serif; background:var(--paper); background-image:linear-gradient(135deg,rgba(255,255,255,.8),transparent 57%),radial-gradient(#cbded8 .8px,transparent .8px); background-size:auto,18px 18px; }
+		header,main,footer { max-width:1160px; margin:auto; padding-left:28px; padding-right:28px; }
+		header { padding-top:41px; padding-bottom:27px; display:flex; align-items:end; justify-content:space-between; gap:25px; }
+		.eyebrow { margin:0 0 9px; color:var(--orange); font-size:.72rem; font-weight:800; letter-spacing:.15em; text-transform:uppercase; }
+		h1 { margin:0; font:500 clamp(2.3rem,5vw,4.8rem)/.94 Georgia,serif; }
+		.intro { max-width:315px; margin:0 0 4px; color:var(--muted); font-size:.92rem; line-height:1.55; }
+		main { padding-top:20px; padding-bottom:54px; }
+		.toolbar { display:flex; align-items:center; justify-content:space-between; gap:15px; margin-bottom:18px; }
+		.live { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.75rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+		.live:before { content:""; width:9px; height:9px; border-radius:50%; background:#2fa66f; box-shadow:0 0 0 5px #d9eee2; }
+		.actions { display:flex; gap:9px; }
+		button { border:0; border-radius:5px; padding:11px 15px; color:white; background:var(--ink); cursor:pointer; font:700 .74rem "Trebuchet MS",sans-serif; letter-spacing:.05em; text-transform:uppercase; }
+		button:hover { background:var(--orange); }
+		button.secondary { color:var(--ink); background:var(--soft); }
+		.layout { display:grid; grid-template-columns:minmax(280px,.9fr) minmax(400px,1.1fr); gap:19px; }
+		.panel { border:1px solid var(--line); border-radius:8px; background:rgba(255,254,250,.92); box-shadow:var(--shadow); }
+		.timeline-panel { padding:25px; }
+		h2 { margin:0 0 6px; font:500 1.5rem Georgia,serif; }
+		.copy { margin:0 0 22px; color:var(--muted); font-size:.83rem; line-height:1.5; }
+		.timeline { position:relative; display:grid; gap:10px; }
+		.timeline:before { content:""; position:absolute; left:17px; top:18px; bottom:18px; width:2px; background:var(--line); }
+		.phase { position:relative; display:flex; align-items:center; gap:14px; width:100%; padding:14px; border:1px solid var(--line); border-radius:6px; color:var(--ink); background:#fff; cursor:pointer; text-align:left; font:inherit; }
+		.phase:hover, .phase.active { border-color:var(--accent); background:#f3faf7; }
+		.phase.active { box-shadow:0 0 0 2px var(--soft); }
+		.phase-dot { z-index:1; display:grid; width:36px; height:36px; flex:0 0 36px; place-items:center; border:2px solid var(--line); border-radius:50%; color:var(--muted); background:var(--panel); font-size:.74rem; font-weight:800; }
+		.phase.active .phase-dot { border-color:var(--accent); color:white; background:var(--accent); }
+		.phase strong { display:block; margin-bottom:4px; font:600 1rem Georgia,serif; }
+		.phase span { color:var(--muted); font-size:.74rem; }
+		.note { margin-top:21px; padding:13px 15px; border-left:3px solid var(--orange); color:var(--muted); background:#fff4eb; font-size:.78rem; line-height:1.5; }
+		.state { overflow:hidden; }
+		.state-head { padding:28px 30px 23px; color:#fff; background:var(--dark); }
+		.state-head h2 { font-size:2rem; }
+		.state-head p { margin:8px 0 0; color:#c8d9d5; font-size:.82rem; }
+		.state-body { padding:25px 30px 29px; }
+		.banner { display:flex; align-items:center; gap:12px; margin-bottom:21px; padding:13px 15px; color:#28784d; background:#e2f1e5; font-size:.8rem; font-weight:700; }
+		.banner:before { content:"ON"; display:grid; width:29px; height:27px; place-items:center; border-radius:50%; color:white; background:#2e9461; font-size:.62rem; }
+		.banner.stopped { color:#a34b35; background:#f9e5dc; }
+		.banner.stopped:before { content:"OFF"; background:var(--orange); }
+		.metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:13px; padding-bottom:21px; border-bottom:1px solid var(--line); }
+		.metric span { display:block; margin-bottom:5px; color:var(--muted); font-size:.68rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+		.metric strong { display:block; color:var(--accent); font:500 1.3rem Georgia,serif; overflow-wrap:anywhere; }
+		.log-title { margin:22px 0 10px; font:500 1.2rem Georgia,serif; }
+		.log { height:150px; overflow:auto; margin:0; padding:14px; color:#d6e9e4; background:#1b3033; border-radius:5px; font:.75rem/1.65 Consolas,"Courier New",monospace; }
+		.code { margin:18px 0 0; padding:15px; overflow:auto; color:#d6e9e4; background:#1b3033; border-radius:5px; font:.74rem/1.6 Consolas,"Courier New",monospace; white-space:pre; }
+		footer { padding-bottom:24px; color:var(--muted); font-size:.73rem; }
+		@media(max-width:760px) { header { display:block; padding:29px 20px 18px; } .intro { margin-top:18px; } main { padding:16px 20px 42px; } footer { padding-left:20px; padding-right:20px; } .layout { display:block; } .state { margin-top:19px; } }
+		@media(max-width:470px) { .toolbar { display:block; } .actions { margin-top:14px; } .metrics { grid-template-columns:1fr; } .state-head,.state-body { padding-left:22px; padding-right:22px; } }
+	</style>
+</head>
+<body>
+	<header>
+		<div><p class="eyebrow">CO3 / Java web technology</p><h1>Servlet Lifecycle<br>Demonstration</h1></div>
+		<p class="intro">Trace the managed journey of a servlet from initialization to request handling and final destruction.</p>
+	</header>
+	<main>
+		<div class="toolbar"><span class="live">Lifecycle simulator ready</span><div class="actions"><button class="secondary" id="resetButton" type="button">Reset lifecycle</button><button id="startButton" type="button">Start servlet</button></div></div>
+		<div class="layout">
+			<section class="panel timeline-panel" aria-labelledby="timeline-title">
+				<h2 id="timeline-title">Lifecycle phases</h2>
+				<p class="copy">Select a phase to inspect its role, then use the controls to move the servlet through its lifecycle.</p>
+				<div class="timeline">
+					<button class="phase" data-phase="init" type="button"><span class="phase-dot">01</span><span><strong>init()</strong><span>Called once when the servlet is created</span></span></button>
+					<button class="phase" data-phase="service" type="button"><span class="phase-dot">02</span><span><strong>service()</strong><span>Handles each incoming client request</span></span></button>
+					<button class="phase" data-phase="destroy" type="button"><span class="phase-dot">03</span><span><strong>destroy()</strong><span>Called once before the servlet is removed</span></span></button>
+				</div>
+				<div class="note" id="phaseNote">Start the servlet to call <strong>init()</strong>, then send requests through <strong>service()</strong>.</div>
+			</section>
+			<section class="panel state" aria-live="polite">
+				<div class="state-head"><h2>Container state</h2><p>The simulated server records every lifecycle callback.</p></div>
+				<div class="state-body">
+					<div class="banner stopped" id="stateBanner">Servlet is not running.</div>
+					<div class="metrics"><div class="metric"><span>Current phase</span><strong id="currentPhase">Stopped</strong></div><div class="metric"><span>Requests served</span><strong id="requestCount">0</strong></div><div class="metric"><span>Instance</span><strong id="instance">--</strong></div></div>
+					<h3 class="log-title">Lifecycle log</h3><pre class="log" id="log">[system] Container is waiting for a servlet instance.</pre>
+					<pre class="code">public void init() { }
+
+protected void service(HttpServletRequest req,
+        HttpServletResponse res) { }
+
+public void destroy() { }</pre>
+				</div>
+			</section>
+		</div>
+	</main>
+	<footer>Demo mode: this standalone file simulates a servlet container without a Java server.</footer>
+	<script>
+		(function () {
+			var running = false; var requests = 0; var instance = 0; var logLines = ["[system] Container is waiting for a servlet instance."];
+			var phaseNote = document.getElementById("phaseNote");
+			var notes = { init: "<strong>init()</strong> runs once and prepares resources before the first request.", service: "<strong>service()</strong> runs for every request and dispatches it to doGet() or doPost().", destroy: "<strong>destroy()</strong> releases resources before the servlet instance is removed." };
+			function writeLog(line) { logLines.push(line); document.getElementById("log").textContent = logLines.join("\n"); document.getElementById("log").scrollTop = document.getElementById("log").scrollHeight; }
+			function setPhase(name) { document.querySelectorAll(".phase").forEach(function (button) { button.className = button.getAttribute("data-phase") === name ? "phase active" : "phase"; }); phaseNote.innerHTML = notes[name]; }
+			function start() { if (running) { requests += 1; document.getElementById("currentPhase").textContent = "service()"; writeLog("[service] Request #" + requests + " handled."); setPhase("service"); return; } running = true; instance += 1; requests = 0; document.getElementById("stateBanner").className = "banner"; document.getElementById("stateBanner").textContent = "Servlet is running."; document.getElementById("instance").textContent = "#" + instance; document.getElementById("currentPhase").textContent = "init()"; writeLog("[init] Servlet instance #" + instance + " initialized."); setPhase("init"); }
+			document.getElementById("startButton").onclick = start;
+			document.getElementById("resetButton").onclick = function () { running = false; requests = 0; logLines = ["[system] Container is waiting for a servlet instance."]; document.getElementById("stateBanner").className = "banner stopped"; document.getElementById("stateBanner").textContent = "Servlet is not running."; document.getElementById("currentPhase").textContent = "Stopped"; document.getElementById("requestCount").textContent = "0"; document.getElementById("instance").textContent = "--"; document.getElementById("log").textContent = logLines[0]; document.querySelectorAll(".phase").forEach(function (button) { button.className = "phase"; }); phaseNote.innerHTML = "Start the servlet to call <strong>init()</strong>, then send requests through <strong>service()</strong>."; };
+		document.querySelectorAll(".phase").forEach(function (button) { button.onclick = function () { var name = button.getAttribute("data-phase"); phaseNote.innerHTML = notes[name]; if (name === "service" && running) { requests += 1; document.getElementById("requestCount").textContent = requests; document.getElementById("currentPhase").textContent = "service()"; writeLog("[service] Request #" + requests + " handled."); } setPhase(name); }; });
+	}());
+	</script>
+</body>
+</html>

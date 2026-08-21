@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Student Registration Servlet</title>
+	<style>
+		:root { --ink:#19292d; --muted:#6b7d80; --paper:#edf3f1; --panel:#fffefa; --line:#d2dfdc; --accent:#1b756a; --soft:#dcefe9; --orange:#df7748; --dark:#203d40; --shadow:0 22px 55px rgba(30,68,62,.13); }
+		* { box-sizing:border-box; }
+		body { margin:0; min-height:100vh; color:var(--ink); font-family:"Trebuchet MS","Segoe UI",sans-serif; background:var(--paper); background-image:linear-gradient(135deg,rgba(255,255,255,.75),transparent 56%),radial-gradient(#cbded8 .8px,transparent .8px); background-size:auto,18px 18px; }
+		header,main,footer { max-width:1160px; margin:auto; padding-left:28px; padding-right:28px; }
+		header { padding-top:41px; padding-bottom:27px; display:flex; align-items:end; justify-content:space-between; gap:25px; }
+		.eyebrow { margin:0 0 9px; color:var(--orange); font-size:.72rem; font-weight:800; letter-spacing:.15em; text-transform:uppercase; }
+		h1 { margin:0; font:500 clamp(2.3rem,5vw,4.8rem)/.94 Georgia,serif; }
+		.intro { max-width:315px; margin:0 0 4px; color:var(--muted); font-size:.92rem; line-height:1.55; }
+		main { padding-top:20px; padding-bottom:54px; }
+		.toolbar { display:flex; align-items:center; justify-content:space-between; gap:15px; margin-bottom:18px; }
+		.live { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.75rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+		.live:before { content:""; width:9px; height:9px; border-radius:50%; background:#2fa66f; box-shadow:0 0 0 5px #d9eee2; }
+		.actions { display:flex; gap:9px; }
+		button { border:0; border-radius:5px; padding:11px 15px; color:white; background:var(--ink); cursor:pointer; font:700 .74rem "Trebuchet MS",sans-serif; letter-spacing:.05em; text-transform:uppercase; }
+		button:hover { background:var(--orange); }
+		button.secondary { color:var(--ink); background:var(--soft); }
+		.layout { display:grid; grid-template-columns:minmax(300px,.9fr) minmax(380px,1.1fr); gap:19px; }
+		.panel { border:1px solid var(--line); border-radius:8px; background:rgba(255,254,250,.9); box-shadow:var(--shadow); }
+		.form-panel { padding:25px; }
+		h2 { margin:0 0 6px; font:500 1.5rem Georgia,serif; }
+		.copy { margin:0 0 22px; color:var(--muted); font-size:.83rem; line-height:1.5; }
+		.fields { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+		.field { margin-bottom:15px; }
+		.field.full { grid-column:1/-1; }
+		label { display:block; margin-bottom:7px; color:var(--dark); font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+		input,select { width:100%; border:1px solid var(--line); border-radius:5px; padding:11px 12px; color:var(--ink); background:#fff; font:inherit; outline:none; }
+		input:focus,select:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--soft); }
+		.submit { width:100%; margin-top:5px; }
+		.message { min-height:18px; margin:12px 0 0; color:var(--orange); font-size:.78rem; }
+		.confirmation { overflow:hidden; }
+		.confirmation-head { padding:28px 30px 23px; color:#fff; background:var(--dark); }
+		.confirmation-head h2 { font-size:2rem; }
+		.confirmation-head p { margin:8px 0 0; color:#c8d9d5; font-size:.82rem; }
+		.confirmation-body { padding:25px 30px 29px; }
+		.success { display:flex; align-items:center; gap:12px; margin-bottom:22px; padding:13px 15px; color:#28784d; background:#e2f1e5; font-size:.8rem; font-weight:700; }
+		.success:before { content:"OK"; display:grid; width:27px; height:27px; place-items:center; border-radius:50%; color:white; background:#2e9461; font-size:.65rem; }
+		.success.waiting { color:var(--muted); background:var(--soft); }
+		.success.waiting:before { content:"..."; color:var(--accent); background:#bfe1d7; }
+		.details { display:grid; grid-template-columns:1fr 1fr; gap:15px; padding-bottom:20px; border-bottom:1px solid var(--line); }
+		.detail span { display:block; margin-bottom:5px; color:var(--muted); font-size:.68rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+		.detail strong { display:block; overflow-wrap:anywhere; font-size:.88rem; }
+		.empty { margin-top:22px; padding:18px; border:1px dashed var(--line); color:var(--muted); text-align:center; font-size:.82rem; line-height:1.5; }
+		.code { margin:22px 0 0; padding:15px; overflow:auto; color:#d6e9e4; background:#1b3033; border-radius:5px; font:.74rem/1.6 Consolas,"Courier New",monospace; white-space:pre; }
+		footer { padding-bottom:24px; color:var(--muted); font-size:.73rem; }
+		@media(max-width:760px) { header { display:block; padding:29px 20px 18px; } .intro { margin-top:18px; } main { padding:16px 20px 42px; } footer { padding-left:20px; padding-right:20px; } .layout { display:block; } .confirmation { margin-top:19px; } }
+		@media(max-width:470px) { .toolbar { display:block; } .actions { margin-top:14px; } .fields,.details { grid-template-columns:1fr; } .field.full { grid-column:auto; } .confirmation-head,.confirmation-body { padding-left:22px; padding-right:22px; } }
+	</style>
+</head>
+<body>
+	<header>
+		<div><p class="eyebrow">CO3 / Java web technology</p><h1>Student Registration<br>Servlet</h1></div>
+		<p class="intro">Process student details as a form submission and return a clear, dynamic registration confirmation.</p>
+	</header>
+	<main>
+		<div class="toolbar"><span class="live">Registration endpoint ready</span><div class="actions"><button class="secondary" id="resetButton" type="button">Reset form</button><button id="sampleButton" type="button">Load sample</button></div></div>
+		<div class="layout">
+			<section class="panel form-panel" aria-labelledby="form-title">
+				<h2 id="form-title">Student details</h2>
+				<p class="copy">Enter values that a servlet would read from <strong>request.getParameter()</strong>.</p>
+				<form id="registrationForm">
+					<div class="fields">
+						<div class="field"><label for="studentName">Full name</label><input id="studentName" type="text" maxlength="45" placeholder="e.g. Gokul Kumar" required></div>
+						<div class="field"><label for="studentId">Student ID</label><input id="studentId" type="text" maxlength="15" placeholder="e.g. CS2026-014" required></div>
+						<div class="field"><label for="studentEmail">Email address</label><input id="studentEmail" type="email" maxlength="60" placeholder="student@campus.edu" required></div>
+						<div class="field"><label for="course">Course</label><select id="course" required><option value="">Select course</option><option>BCA</option><option>B.Sc. Computer Science</option><option>B.Tech Information Technology</option><option>MCA</option></select></div>
+						<div class="field full"><label for="year">Year of study</label><select id="year" required><option value="">Select year</option><option>First year</option><option>Second year</option><option>Third year</option><option>Final year</option></select></div>
+					</div>
+					<button class="submit" type="submit">Process registration</button>
+					<p class="message" id="formMessage" role="status"></p>
+				</form>
+			</section>
+			<section class="panel confirmation" aria-live="polite">
+				<div class="confirmation-head"><h2>Registration response</h2><p>Generated by the simulated <strong>doPost()</strong> request cycle.</p></div>
+				<div class="confirmation-body">
+					<div class="success waiting" id="responseBanner">Waiting for form submission.</div>
+					<div class="details"><div class="detail"><span>Name</span><strong id="resultName">--</strong></div><div class="detail"><span>Student ID</span><strong id="resultId">--</strong></div><div class="detail"><span>Email</span><strong id="resultEmail">--</strong></div><div class="detail"><span>Course</span><strong id="resultCourse">--</strong></div><div class="detail"><span>Year</span><strong id="resultYear">--</strong></div><div class="detail"><span>Status</span><strong id="resultStatus">Not processed</strong></div></div>
+					<div class="empty" id="emptyMessage">Submit the form to display the dynamic registration record here.</div>
+					<pre class="code">protected void doPost(HttpServletRequest request,
+        HttpServletResponse response) {
+    String name = request.getParameter("name");
+    String course = request.getParameter("course");
+    response.setContentType("text/html");
+    response.getWriter().println("Registration successful");
+}</pre>
+				</div>
+			</section>
+		</div>
+	</main>
+	<footer>Demo mode: this standalone file simulates servlet form processing without a Java server.</footer>
+	<script>
+		(function () {
+			var form = document.getElementById("registrationForm");
+			var fields = { name: document.getElementById("studentName"), id: document.getElementById("studentId"), email: document.getElementById("studentEmail"), course: document.getElementById("course"), year: document.getElementById("year") };
+			var message = document.getElementById("formMessage");
+
+			function clean(value) { return value.replace(/^\s+|\s+$/g, ""); }
+			function escapeHtml(value) { return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;"); }
+			function setText(id, value) { document.getElementById(id).textContent = value; }
+
+			function processRegistration() {
+				var name = clean(fields.name.value); var studentId = clean(fields.id.value); var email = clean(fields.email.value);
+				if (!name || !studentId || !email || !fields.course.value || !fields.year.value) { message.textContent = "Please complete every registration field."; return; }
+				setText("resultName", escapeHtml(name)); setText("resultId", escapeHtml(studentId)); setText("resultEmail", escapeHtml(email)); setText("resultCourse", escapeHtml(fields.course.value)); setText("resultYear", escapeHtml(fields.year.value)); setText("resultStatus", "Registered");
+				document.getElementById("responseBanner").className = "success"; document.getElementById("responseBanner").textContent = "Registration processed successfully."; document.getElementById("emptyMessage").style.display = "none"; message.textContent = "The servlet response was generated successfully.";
+			}
+
+			form.onsubmit = function (event) { event.preventDefault(); processRegistration(); };
+			document.getElementById("sampleButton").onclick = function () { fields.name.value = "Asha Menon"; fields.id.value = "CS2026-014"; fields.email.value = "asha.menon@campus.edu"; fields.course.value = "BCA"; fields.year.value = "Second year"; processRegistration(); };
+			document.getElementById("resetButton").onclick = function () { form.reset(); ["resultName","resultId","resultEmail","resultCourse","resultYear"].forEach(function (id) { setText(id, "--"); }); setText("resultStatus", "Not processed"); document.getElementById("responseBanner").className = "success waiting"; document.getElementById("responseBanner").textContent = "Waiting for form submission."; document.getElementById("emptyMessage").style.display = "block"; message.textContent = ""; };
+		}());
+	</script>
+</body>
+</html>

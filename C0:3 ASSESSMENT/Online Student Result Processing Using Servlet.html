@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Online Student Results</title>
+	<style>
+		:root { --ink:#19292d; --muted:#6b7d80; --paper:#f1f2ee; --panel:#fffefa; --line:#d9ddd5; --accent:#356b58; --soft:#e1eee5; --orange:#c96843; --dark:#263b3d; --shadow:0 22px 55px rgba(45,61,48,.13); }
+		* { box-sizing:border-box; }
+		body { margin:0; min-height:100vh; color:var(--ink); font-family:"Trebuchet MS","Segoe UI",sans-serif; background:var(--paper); background-image:linear-gradient(135deg,rgba(255,255,255,.8),transparent 57%),radial-gradient(#d5d9ce .8px,transparent .8px); background-size:auto,18px 18px; }
+		header,main,footer { max-width:1160px; margin:auto; padding-left:28px; padding-right:28px; }
+		header { padding-top:41px; padding-bottom:27px; display:flex; align-items:end; justify-content:space-between; gap:25px; }
+		.eyebrow { margin:0 0 9px; color:var(--orange); font-size:.72rem; font-weight:800; letter-spacing:.15em; text-transform:uppercase; }
+		h1 { margin:0; font:500 clamp(2.3rem,5vw,4.8rem)/.94 Georgia,serif; }
+		.intro { max-width:315px; margin:0 0 4px; color:var(--muted); font-size:.92rem; line-height:1.55; }
+		main { padding-top:20px; padding-bottom:54px; }
+		.toolbar { display:flex; align-items:center; justify-content:space-between; gap:15px; margin-bottom:18px; }
+		.live { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:.75rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+		.live:before { content:""; width:9px; height:9px; border-radius:50%; background:#2fa66f; box-shadow:0 0 0 5px #d9eee2; }
+		.actions { display:flex; gap:9px; }
+		button { border:0; border-radius:5px; padding:11px 15px; color:white; background:var(--ink); cursor:pointer; font:700 .74rem "Trebuchet MS",sans-serif; letter-spacing:.05em; text-transform:uppercase; }
+		button:hover { background:var(--orange); }
+		button.secondary { color:var(--ink); background:var(--soft); }
+		.layout { display:grid; grid-template-columns:minmax(280px,.76fr) minmax(400px,1.24fr); gap:19px; }
+		.panel { border:1px solid var(--line); border-radius:8px; background:rgba(255,254,250,.92); box-shadow:var(--shadow); }
+		.search-panel { padding:25px; }
+		h2 { margin:0 0 6px; font:500 1.5rem Georgia,serif; }
+		.copy { margin:0 0 22px; color:var(--muted); font-size:.83rem; line-height:1.5; }
+		.field { margin-bottom:16px; }
+		label { display:block; margin-bottom:7px; color:var(--dark); font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+		input,select { width:100%; border:1px solid var(--line); border-radius:5px; padding:11px 12px; color:var(--ink); background:#fff; font:inherit; outline:none; }
+		input:focus,select:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--soft); }
+		.submit { width:100%; margin-top:3px; }
+		.message { min-height:18px; margin:12px 0 0; color:var(--orange); font-size:.78rem; }
+		.result { overflow:hidden; }
+		.result-head { padding:28px 30px 23px; color:#fff; background:var(--dark); }
+		.result-head h2 { font-size:2rem; }
+		.result-head p { margin:8px 0 0; color:#cbd8d2; font-size:.82rem; }
+		.result-body { padding:25px 30px 29px; }
+		.banner { display:flex; align-items:center; gap:12px; margin-bottom:21px; padding:13px 15px; color:#28784d; background:#e2f1e5; font-size:.8rem; font-weight:700; }
+		.banner:before { content:"OK"; display:grid; width:27px; height:27px; place-items:center; border-radius:50%; color:white; background:#2e9461; font-size:.65rem; }
+		.banner.waiting { color:var(--muted); background:var(--soft); }
+		.banner.waiting:before { content:"..."; color:var(--accent); background:#c4ded0; }
+		.student-meta { display:grid; grid-template-columns:1fr 1fr; gap:14px; padding-bottom:20px; border-bottom:1px solid var(--line); }
+		.student-meta span, .summary-label { display:block; margin-bottom:5px; color:var(--muted); font-size:.68rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+		.student-meta strong { display:block; overflow-wrap:anywhere; font-size:.88rem; }
+		.marks { width:100%; margin-top:20px; border-collapse:collapse; font-size:.82rem; }
+		.marks th { padding:0 0 9px; color:var(--muted); text-align:left; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; }
+		.marks th:last-child, .marks td:last-child { text-align:right; }
+		.marks td { padding:11px 0; border-top:1px solid var(--line); }
+		.summary { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:21px; padding-top:19px; border-top:1px solid var(--line); }
+		.summary strong { display:block; color:var(--accent); font:500 1.35rem Georgia,serif; }
+		.empty { margin-top:20px; padding:18px; border:1px dashed var(--line); color:var(--muted); text-align:center; font-size:.82rem; line-height:1.5; }
+		.code { margin:22px 0 0; padding:15px; overflow:auto; color:#d9e8df; background:#1e3032; border-radius:5px; font:.74rem/1.6 Consolas,"Courier New",monospace; white-space:pre; }
+		footer { padding-bottom:24px; color:var(--muted); font-size:.73rem; }
+		@media(max-width:760px) { header { display:block; padding:29px 20px 18px; } .intro { margin-top:18px; } main { padding:16px 20px 42px; } footer { padding-left:20px; padding-right:20px; } .layout { display:block; } .result { margin-top:19px; } }
+		@media(max-width:470px) { .toolbar { display:block; } .actions { margin-top:14px; } .student-meta,.summary { grid-template-columns:1fr; } .result-head,.result-body { padding-left:22px; padding-right:22px; } }
+	</style>
+</head>
+<body>
+	<header>
+		<div><p class="eyebrow">CO3 / Java web technology</p><h1>Online Student<br>Results</h1></div>
+		<p class="intro">Look up a student's semester performance and return a clear, dynamic result card through a servlet-style request.</p>
+	</header>
+	<main>
+		<div class="toolbar"><span class="live">Results endpoint ready</span><div class="actions"><button class="secondary" id="resetButton" type="button">Reset lookup</button><button id="sampleButton" type="button">Load sample</button></div></div>
+		<div class="layout">
+			<section class="panel search-panel" aria-labelledby="lookup-title">
+				<h2 id="lookup-title">Find a result</h2>
+				<p class="copy">Enter the values a servlet would receive from <strong>request.getParameter()</strong>.</p>
+				<form id="resultForm">
+					<div class="field"><label for="rollNumber">Roll number</label><input id="rollNumber" type="text" maxlength="18" placeholder="e.g. CS2026-014" required></div>
+					<div class="field"><label for="semester">Semester</label><select id="semester" required><option value="">Select semester</option><option>Semester 1</option><option>Semester 2</option><option>Semester 3</option><option>Semester 4</option></select></div>
+					<button class="submit" type="submit">Process result</button>
+					<p class="message" id="formMessage" role="status"></p>
+				</form>
+			</section>
+			<section class="panel result" aria-live="polite">
+				<div class="result-head"><h2>Result response</h2><p>Generated by the simulated <strong>doPost()</strong> request cycle.</p></div>
+				<div class="result-body">
+					<div class="banner waiting" id="resultBanner">Waiting for a result lookup.</div>
+					<div class="student-meta"><div><span>Student</span><strong id="studentName">--</strong></div><div><span>Roll number</span><strong id="studentRoll">--</strong></div><div><span>Semester</span><strong id="studentSemester">--</strong></div><div><span>Published</span><strong id="publishedDate">--</strong></div></div>
+					<div class="empty" id="emptyMessage">Submit a lookup to display the student's subject-wise marks.</div>
+					<table class="marks" id="marksTable" hidden><thead><tr><th>Subject</th><th>Marks</th></tr></thead><tbody><tr><td>Web Technology</td><td>86 / 100</td></tr><tr><td>Database Systems</td><td>78 / 100</td></tr><tr><td>Java Programming</td><td>91 / 100</td></tr><tr><td>Computer Networks</td><td>74 / 100</td></tr></tbody></table>
+					<div class="summary" id="summary" hidden><div><span class="summary-label">Total</span><strong id="total">--</strong></div><div><span class="summary-label">Percentage</span><strong id="percentage">--</strong></div><div><span class="summary-label">Grade</span><strong id="grade">--</strong></div></div>
+					<pre class="code">protected void doPost(HttpServletRequest request,
+        HttpServletResponse response) {
+    String roll = request.getParameter("rollNumber");
+    String semester = request.getParameter("semester");
+    response.setContentType("text/html");
+    response.getWriter().println("Result for " + roll);
+}</pre>
+				</div>
+			</section>
+		</div>
+	</main>
+	<footer>Demo mode: this standalone file simulates servlet result processing without a Java server.</footer>
+	<script>
+		(function () {
+			var form = document.getElementById("resultForm");
+			var roll = document.getElementById("rollNumber");
+			var semester = document.getElementById("semester");
+			var message = document.getElementById("formMessage");
+			var scores = [86, 78, 91, 74];
+
+			function clean(value) { return value.replace(/^\s+|\s+$/g, ""); }
+			function setText(id, value) { document.getElementById(id).textContent = value; }
+			function showResult() {
+				var rollNumber = clean(roll.value);
+				if (!rollNumber || !semester.value) { message.textContent = "Enter a roll number and choose a semester."; return; }
+				var total = scores.reduce(function (sum, score) { return sum + score; }, 0);
+				var percentage = (total / scores.length).toFixed(2);
+				var grade = percentage >= 90 ? "A+" : percentage >= 80 ? "A" : percentage >= 70 ? "B" : "C";
+				setText("studentName", rollNumber === "CS2026-014" ? "Asha Menon" : "Student record"); setText("studentRoll", rollNumber); setText("studentSemester", semester.value); setText("publishedDate", "21 August 2026"); setText("total", total + " / 400"); setText("percentage", percentage + "%"); setText("grade", grade);
+				document.getElementById("resultBanner").className = "banner"; document.getElementById("resultBanner").textContent = "Result processed successfully. Status: PASS"; document.getElementById("emptyMessage").hidden = true; document.getElementById("marksTable").hidden = false; document.getElementById("summary").hidden = false; message.textContent = "The servlet response was generated successfully.";
+			}
+			form.onsubmit = function (event) { event.preventDefault(); showResult(); };
+			document.getElementById("sampleButton").onclick = function () { roll.value = "CS2026-014"; semester.value = "Semester 4"; showResult(); };
+			document.getElementById("resetButton").onclick = function () { form.reset(); ["studentName","studentRoll","studentSemester","publishedDate","total","percentage","grade"].forEach(function (id) { setText(id, "--"); }); document.getElementById("resultBanner").className = "banner waiting"; document.getElementById("resultBanner").textContent = "Waiting for a result lookup."; document.getElementById("emptyMessage").hidden = false; document.getElementById("marksTable").hidden = true; document.getElementById("summary").hidden = true; message.textContent = ""; };
+		}());
+	</script>
+</body>
+</html>
