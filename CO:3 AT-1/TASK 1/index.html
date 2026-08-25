@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Student Registration Preview</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container">
+        <header class="page-header">
+            <p class="eyebrow">DOM-based practical</p>
+            <h1>Student Registration</h1>
+            <p>Build a clean student profile instantly, without reloading the page.</p>
+        </header>
+
+        <section class="form-card" aria-labelledby="form-heading">
+            <div class="section-heading">
+                <span class="step-number">01</span>
+                <div>
+                    <h2 id="form-heading">Student details</h2>
+                    <p>Complete every field to generate your preview.</p>
+                </div>
+            </div>
+
+            <form id="studentForm" novalidate>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" autocomplete="name" required>
+
+                <label for="registerNumber">Register Number</label>
+                <input type="text" id="registerNumber" name="registerNumber" required>
+
+                <label for="department">Department</label>
+                <input type="text" id="department" name="department" required>
+
+                <label for="year">Year of Study</label>
+                <select id="year" name="year" required>
+                    <option value="">Select year</option>
+                    <option value="First Year">First Year</option>
+                    <option value="Second Year">Second Year</option>
+                    <option value="Third Year">Third Year</option>
+                    <option value="Fourth Year">Fourth Year</option>
+                </select>
+
+                <div class="button-row">
+                    <button type="submit">Display Profile</button>
+                    <button type="reset" class="secondary-button">Clear</button>
+                </div>
+                <p id="formMessage" class="form-message" role="alert"></p>
+            </form>
+        </section>
+
+        <section class="preview-card" aria-labelledby="preview-heading" aria-live="polite">
+            <div class="section-heading">
+                <span class="step-number accent">02</span>
+                <div>
+                    <h2 id="preview-heading">Profile preview</h2>
+                    <p>Your generated profile appears here.</p>
+                </div>
+            </div>
+            <div id="profileContainer">
+                <p class="empty-message">Your profile will appear here.</p>
+            </div>
+        </section>
+    </main>
+
+    <section style="text-align: center; padding: 2rem; margin: 0 auto; max-width: 1000px;">
+        <h3 style="margin-bottom: 1rem; color: var(--text-muted);">Reference Image</h3>
+        <img src="image.png" alt="Screenshot" style="max-width: 100%; border-radius: 12px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border);">
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
