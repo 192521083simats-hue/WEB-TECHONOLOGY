@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet type="text/xsl" href="courses.xsl"?>
+
+<courses>
+
+    <course id="ITA02">
+        <code>ITA0202</code>
+        <name>Web Technology</name>
+        <faculty>Dr.P.Suresh</faculty>
+        <students>40</students>
+        <credits>4</credits>
+        <type>MCQ</type>
+    </course>
+
+    <course id="UBA53">
+        <code>UBA5311</code>
+        <name></name>
+        <faculty>Dr.GOWRI</faculty>
+        <students>36</students>
+        <credits>4</credits>
+        <type>Theory</type>
+    </course>
+
+    <course id="CSA10">
+        <code>CSA1013</code>
+        <name>SOFTWARE ENGINEERING</name>
+        <faculty>Dr.LATHA</faculty>
+        <students>36</students>
+        <credits>2</credits>
+        <type>Practical</type>
+    </course>
+
+    <course id="CSA09">
+        <code>CSA0920</code>
+        <name>JAVA PROGRAMING</name>
+        <faculty>Dr.RAMKUMAR</faculty>
+        <students>38</students>
+        <credits>4</credits>
+        <type>Theory</type>
+    </course>
+
+    <course id="CSA03">
+        <code>CSA0379</code>
+        <name>Data STRUCTURE</name>
+        <faculty>Dr.KALAIARASI</faculty>
+        <students>42</students>
+        <credits>3</credits>
+        <type>Theory</type>
+    </course>
+
+</courses>
